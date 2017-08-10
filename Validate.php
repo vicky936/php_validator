@@ -3,15 +3,15 @@
     class Validate
     {       
         /*
-        // used to validate regex
+        // used to validate Validate
         @param array $input
         @param array $rules
         @return Array
         */
         public static function check($input,$rules)
         {           
-            $input = Regex::MysqlEscapeString($input);
-            $input = Regex::htmlSpecialChars($input);
+            $input = Validate::MysqlEscapeString($input);
+            $input = Validate::htmlSpecialChars($input);
 
             $output = array();
             $error = 0;
@@ -21,21 +21,21 @@
                 {
                     if($inputKey == $rulesKey)
                     {
-                        $status = Regex::ExplodeRules($rulesValue);
+                        $status = Validate::ExplodeRules($rulesValue);
                         foreach ($status as $value)
                         {
                             $functionName = $value;
                             
                             if(preg_match('/min/',$functionName) || preg_match('/max/',$functionName) || preg_match('/custom/',$functionName))
                             {
-                                $status = Regex::ExplodeSize($functionName);
+                                $status = Validate::ExplodeSize($functionName);
                                 $functionName =$status[0];
                                 $size = $status[1];
-                                $result = Regex::$functionName($inputKey,$inputValue,$size);
+                                $result = Validate::$functionName($inputKey,$inputValue,$size);
                             }
                             else
                             {
-                                 $result = Regex::$functionName($inputKey,$inputValue);
+                                 $result = Validate::$functionName($inputKey,$inputValue);
                             }
                            
                             if($result != "TRUE" )
@@ -50,13 +50,13 @@
             }
             if(empty($output))
             {
-                $associativeArray = Regex::inputArray($input);
+                $associativeArray = Validate::inputArray($input);
                 $output = array('success' => "true",'error_message' => null);
                 $associativeArray = $associativeArray+$output;                
             }
             else
             {
-                $associativeArray = Regex::inputArray($input);
+                $associativeArray = Validate::inputArray($input);
                 $output = array('success' => "false",'error_message' => $output);
                 $associativeArray = $associativeArray+$output;
             } 
@@ -125,7 +125,7 @@
         @param string $input
         @return string
         */
-        public static function Alpha($inputKey,$input)
+        public static function alpha($inputKey,$input)
         {
             //if(is_string($input))
             if(preg_match("/^[a-zA-Z]$/", $input))
@@ -439,16 +439,16 @@
         }
 
         /*
-        // used to execute the user given regex
+        // used to execute the user given Validate
         @param string $inputKey 
         @param string $inputValue
-        @param string $regex
+        @param string $Validate
         @return string
         */
-        public static function custom($inputKey,$inputValue,$regex)
+        public static function custom($inputKey,$inputValue,$Validate)
         {
-            $regex = $regex;
-            if(preg_match($regex, $inputValue)) 
+            $Validate = $Validate;
+            if(preg_match($Validate, $inputValue)) 
             {               
                return "TRUE";
             }
@@ -466,7 +466,7 @@
 
     $rules = array( "age"=>"alpha|required","name"=>"custom:/^[+]?\d{10,14}$/","email"=>"required|email","phoneNumber"=>"required|phoneNumber");
 
-    $result = Regex::Check($input,$rules);
+    $result = Validate::Check($input,$rules);
 
     echo "<pre>";
     print_r($result);
